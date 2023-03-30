@@ -52,7 +52,6 @@ def generate_scatter_plot(policydf, industries, colors, markers):
 # Convert df to a ColumnDataSource: sourceimport pandas as pd
 
 df = pd.read_csv('samplerandompolicydata.csv')
-# source = ColumnDataSource(df)
 
 industries = ["Education", "Unknown", "Information", "Travel"]
 colors=['red', 'blue', 'green', 'grey']
@@ -60,13 +59,13 @@ shape_markers = ['hex', 'circle_x', 'triangle', 'square']
 
 p=generate_scatter_plot(df,industries,colors,shape_markers)
 
+# Generates bokehrandomdata.html with the graph
 show(p)
 
 script, div = components(p)
 
 with open("scatterplotscript.html", "w") as f:
     f.write(script)
-
 
 with open("scatterplotdiv.html", "w") as g:
     g.write(div)
