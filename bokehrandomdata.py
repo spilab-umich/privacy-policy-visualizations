@@ -19,9 +19,9 @@ def generate_scatter_plot(policydf, industries, colors, markers):
 
     shape_markers = markers
 
-    p = figure(title="Length vs Vagueness",
-           x_axis_label='Policy Length',
-           y_axis_label='Policy Vagueness',
+    p = figure(title="Privacy Policy Length vs Vagueness",
+           x_axis_label='Number of Words in the Policy',
+           y_axis_label='Vagueness (as measured by METRIC)',
            tools=TOOLS)
     p.xaxis[0].formatter = NumeralTickFormatter(format="0")
 
@@ -42,6 +42,8 @@ def generate_scatter_plot(policydf, industries, colors, markers):
     taptool.callback = OpenURL(url=url)
 
     p.add_tools(hover)
+
+    p.legend.title = 'Industry Sector of Privacy Policy'
 
     return p
 
