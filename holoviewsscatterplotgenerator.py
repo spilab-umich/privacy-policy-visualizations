@@ -239,7 +239,7 @@ def create_taptool():
 def main():
 
     # Generate dataframe from policy data in json format. Assumes a format of nested dictionaries, in the form {"id":{"x":1, "y":2}}.
-    filename = "./visualization_data_industries.json" 
+    filename = "./data/visualization_data_industries.json" 
     with open(filename, 'r') as e:
         data = json.load(e)
     df = generate_df_from_json(data, industries=1)
