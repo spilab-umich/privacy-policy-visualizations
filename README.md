@@ -22,17 +22,10 @@ In addition to Python 3.10, this code makes use of the following packages: [holo
 
 > `pip install holoviews`
 
-## Running the code
-To run the code, make sure that you have the files `visualization_data_industries.json` 
-and `holoviewsscatterplotgenerator.py`. Using your termianl of choice, navigate into the directory where these files are located. Once there, run:
+## Additional Data Files
+In addition, you will need data that contains the actual privacy policy data from Privaseer. I would have included it here, but GitHub has a 100MB storage limit, and the privaseer policy data is much larger than that.
 
-> `python holoviewsscatterplotgenerator.py`
-
-`holoviewsscatterplotgenerator.py` will read in the data from `visualization_data_industries.json` and create two scatterplots, saving them in the directory `./holoviews_vis/` as `holoviews_length_vague.html` and `holoviews_length_vague_industry.html`. 
-
-
-## Overview of Files
-`visualization_data_industries.json` --> a json file containing Privaseer policy data in a dictionary of dictionaries format, similar to the following:
+The data must be a json file containing Privaseer policy data in a dictionary of dictionaries format, similar to the following:
 
     {
         "58a055e3eb7477a963582952132965037ace7057": {
@@ -52,6 +45,18 @@ and `holoviewsscatterplotgenerator.py`. Using your termianl of choice, navigate 
     ...
     }
 
+## Running the code
+To run the code, make sure that you have the data file from privaseer  
+and `holoviewsscatterplotgenerator.py`. Open `holoviewsscatterplotgenerator.py` and edit the `filename` variable in the `main` function (line 240) to point to your data file (for example, if your data is in a file `data.json`, change line 240 in `holoviewsscatterplotgenerator.py` to read `filename = 'data.json'`)
+
+Using your terminal of choice, navigate into the directory where these files are located. Once there, run:
+
+> `python holoviewsscatterplotgenerator.py`
+
+`holoviewsscatterplotgenerator.py` will read in the data from your data file and create two scatterplots, saving them in the directory `./holoviews_vis/` as `holoviews_length_vague.html` and `holoviews_length_vague_industry.html`. 
+
+
+## Overview of Files
 
 holoviewsscatterplotgenerator.py --> A python file that contains the code to generate the scatter plots. 
 
