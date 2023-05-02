@@ -29,7 +29,7 @@ In addition to Python 3.10, this code makes use of the following packages: [holo
 > \> `pip install holoviews`
 
 ## Additional data files
-In addition, you will need data that contains the actual privacy policy data from Privaseer. I would have included the data in this github repository, but GitHub has a 100MB storage limit, and the privaseer policy data is much larger than that.
+In addition, you will need data that contains the actual privacy policy data from Privaseer. I would have included the data in this github repository, but GitHub has a 100MB storage limit, and the privaseer policy data is much larger than that. Some of the Privaseer data can be found at [this link](https://drive.google.com/file/d/1YbA74uQ-msZXCtvpvsIAN-a4zuJRNxit/view?usp=sharing).
 
 The data must be a json file containing Privaseer policy data in a dictionary of dictionaries format, similar to the following:
 
