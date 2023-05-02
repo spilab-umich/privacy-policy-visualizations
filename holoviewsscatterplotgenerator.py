@@ -17,22 +17,42 @@ import json
 import datashader as ds
 
 
-def create_straight_line(x=True, y=True):
-    # Calculate median and plot it as lines on the graph
-    medianvalues = source.median()
-    mdx = medianvalues[xaxis]
-    mdy = medianvalues[yaxis]
+def create_hovertool(values):
+    '''
+    This function createś a hovertool object that can be added to plots, which allows the user to hover over a datapoint and there will be a small popup showing information (e.g., name of policy, url of policy, etc.) 
+
+        Parameters:
+            values (dict): A dictionary with what should be displayed to the user in the hover tool. It should be in the form "Key": "@value", where "Key" is the text shown to the user, and "value" is the column name of the information to be shown. For example, the entry "URL": "@url" means the text URL will be shown to the user followed by the url of the datapoint, which is under the column "url".
+        
+        Returns:
+            hover (HoverTool): A HoverTool
+
+    '''       
+    tooltips = []
+
+    for (k, v) in values.items():
+        tooltips.append((k, v))
+        
+    hover = HoverTool(tooltips=tooltips)
+    return hover
+
+
+def create_taptool():
+    '''
+    This function createś a taptool object that, when added to a plot, allows you to click on a datapoint and it opens the url associated with that datapoint.
+
+        Parameters:
+            None
+        
+        Returns:
+            taptool (TapTool): A TapTool object
+
+    '''       
     
-    if x == TRUE:
-        pathxaxis = hv.Path({'x': [mdx, mdx], 'y':[0, maxy]})
-        pathxaxis.opts(color='red', line_width=3)
-    if y == TRUE:
-        pathyaxis = hv.Path({'x': [0, maxx], 'y':[mdy, mdy]}, color='red')
-        pathyaxis.opts(color='red', line_width=3)
-
-
-
-
+    url = "@url"
+    taptool = TapTool()
+    taptool.callback = OpenURL(url=url)
+    return taptool
 
 
 def generate_scatter_plot(source, xaxis, yaxis, median=0):
@@ -47,9 +67,7 @@ def generate_scatter_plot(source, xaxis, yaxis, median=0):
 
         Returns:
             p (Points): A Holoviews Points object
-    '''   
-    
-
+    '''     
     # Make Hover Tool
     hover_opts = {
         'URL': '@url',
@@ -63,7 +81,7 @@ def generate_scatter_plot(source, xaxis, yaxis, median=0):
     width = 1250
     height = 1000
     size = 5
-    maxvalues = source.max()
+    # maxvalues = source.max()
     # maxx = maxvalues[xaxis]
     # maxy = maxvalues[yaxis]
     maxx = 27000
@@ -89,7 +107,7 @@ def generate_scatter_plot(source, xaxis, yaxis, median=0):
     return p*pathxaxis*pathyaxis
 
 
-def generate_scatter_plot_industries(source, xaxis, yaxis, median=0, industries="all", exclude_unknowns = 1, overlay=0):   
+def generate_scatter_plot_industries(source, xaxis, yaxis, industries="all", exclude_unknowns = 1, overlay=0):   
     '''
     Returns a Holoviews Point Plot showing policy data in a scatter plot format split by industries.
 
@@ -97,8 +115,7 @@ def generate_scatter_plot_industries(source, xaxis, yaxis, median=0, industries=
             source (df): a dataframe with the appropiate data. It assumes it has a URL column and an industries column for each entry.
             xaxis (str): a string showing what the x-axis variable should be.
             yaxis (str): A string indicating what the y-axis variable should be
-            median (int): An optional 0/1 flag. The default is 0. If set to a 1, the plot will have lines indicating the median values for the x and y variables.
-            industries (list): A list of strings of what industries should be plotted. 
+            industries (list): An optional list of strings of what industries should be plotted. If left to its default value ("all"), the code will create a visualization for each industry present in the dataframe. 
             exclude_unknowns (int): An optional 0/1 flag. The default is 1. If set to 1, the plot will exclude policies of type 'Unknown'. If set to 0, the plot will contain policies of type "Unknown".
             overlay (int): An optional 0/1 flag. The default is 0. If set to 0, the plots will be displayed differently (one separate plot for each industry). If set to 1, the plots will be overlaid one on top of the other.
 
@@ -123,14 +140,14 @@ def generate_scatter_plot_industries(source, xaxis, yaxis, median=0, industries=
     width = 1000
     height = 1000
     size = 10
-    
     colors=['red', 'blue', 'green', 'grey', 'pink', 'purple', 'black', 'brown', 'yellow', 'orange']
     markers = ['plus', 'circle_x', 'triangle', 'square', 'cross', 'diamond', 'hex', 'star', 'x', 'dot']
 
-    # Iterate through all industries, generate a unique plot for each industry
+    # Get list of industries
     if industries == "all":
         industries = source['industry'].unique()
 
+    # Iterate through all industries and generate a unique plot for each industry
     counter = 0    
     for industry in industries:
         if industry == "Unknown":
@@ -144,13 +161,12 @@ def generate_scatter_plot_industries(source, xaxis, yaxis, median=0, industries=
 
         list_of_figures.append(p)
 
-    # Put all plots together into a single layout
-    q = 0
-
+    counter = 0
     # Display each industry as a different plot side by side
     if overlay==0:
         for figure in list_of_figures:
-            if q == 0:
+            if counter == 0:
+                counter += 1
                 q = figure
             else:            
                 q = q + figure
@@ -158,7 +174,8 @@ def generate_scatter_plot_industries(source, xaxis, yaxis, median=0, industries=
     # Display all industries in the same plot
     if overlay==1:
         for figure in list_of_figures:
-            if q == 0:
+            if counter == 0:
+                counter += 1
                 q = figure
             else:            
                 q = q * figure
@@ -199,45 +216,7 @@ def generate_df_from_json(data, industries=0):
     return df
 
 
-def create_hovertool(values):
-    '''
-    This function createś a hovertool object that can be added to plots, which allows the user to hover over a datapoint and there will be a small popup showing information (e.g., name of policy, url of policy, etc.) 
-
-        Parameters:
-            values (dict): A dictionary with what should be displayed to the user in the hover tool. It should be in the form "Key": "@value", where "Key" is the text shown to the user, and "value" is the column name of the information to be shown. For example, the entry "URL": "@url" means the text URL will be shown to the user followed by the url of the datapoint, which is under the column "url".
-        
-        Returns:
-            hover (HoverTool): A HoverTool
-
-    '''       
-    tooltips = []
-
-    for (k, v) in values.items():
-        tooltips.append((k, v))
-        
-    hover = HoverTool(tooltips=tooltips)
-    return hover
-
-def create_taptool():
-    '''
-    This function createś a taptool object that, when added to a plot, allows you to click on a datapoint and it opens the url associated with that datapoint.
-
-        Parameters:
-            None
-        
-        Returns:
-            taptool (TapTool): A TapTool object
-
-    '''       
-    
-    url = "@url"
-    taptool = TapTool()
-    taptool.callback = OpenURL(url=url)
-    return taptool
-
-
 def main():
-
     # Generate dataframe from policy data in json format. Assumes a format of nested dictionaries, in the form {"id":{"x":1, "y":2}}.
     filename = "./data/visualization_data_industries.json" 
     with open(filename, 'r') as e:
@@ -248,11 +227,12 @@ def main():
     p=generate_scatter_plot(df, 'length', 'vague', median=0)
     q=generate_scatter_plot_industries(df, 'length', 'readability', overlay=0)
     
-    # Save plots. Here we use the decimate function to only show a percentage of the points at any given time.
+    # Save the plots as HTML files. 
+    # Here we use the decimate function to only show a percentage of the points at any given time, reducing overplotting and increasing performance).
     hv.save(decimate(p), "./holoviews_vis/holoviews_length_vague.html")
     hv.save(decimate(q), "./holoviews_vis/holoviews_length_vague_industry.html")
 
-    # Option two: rasterize (cleaner, but no interactivity)
+    # Option two to solve overplotting: rasterize (creates a cleaner scatterplot but with no interactivity with the points)
     # hv.save(rasterize(p).opts(height=1250, width=750), "./holoviews_vis/holoviews.html")
 
     

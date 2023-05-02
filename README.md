@@ -54,7 +54,7 @@ The data must be a json file containing Privaseer policy data in a dictionary of
 # Running the code
 To run the code, make sure that you have the data file from privaseer and `holoviewsscatterplotgenerator.py`. 
 
-Open `holoviewsscatterplotgenerator.py` and edit the `filename` variable in the `main` function (line 240) to point to your data file (for example, if your privacy policy data is in a file `data.json`, change line 240 in `holoviewsscatterplotgenerator.py` to read `filename = 'data.json'`)
+Open `holoviewsscatterplotgenerator.py` and edit the `filename` variable in the `main` function (line 240) to point to your data file (for example, if your privacy policy data is in a file `data.json`, change line 221 in `holoviewsscatterplotgenerator.py` to read `filename = 'data.json'`)
 
 Using your terminal of choice, navigate into the directory where these files are located. Once there, run:
 
